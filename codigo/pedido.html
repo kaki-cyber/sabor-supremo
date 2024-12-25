@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pedido Online</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f3f3f3;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+    .chat-container {
+      background-color: #fff;
+      border-radius: 10px;
+      width: 400px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      overflow: hidden;
+    }
+
+    .chat-box {
+      padding: 20px;
+      max-height: 300px;
+      overflow-y: auto;
+      height: 300px;
+    }
+
+    .message {
+      margin-bottom: 10px;
+    }
+
+    .system p {
+      color: #007bff;
+    }
+
+    .user-input {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+      margin-bottom: 10px;
+    }
+
+    .send-button {
+      width: 100%;
+      padding: 10px;
+      background-color: #007bff;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    .send-button:hover {
+      background-color: #0056b3;
+    }
+
+    .confirmation {
+      display: none;
+      padding: 20px;
+      background-color: #fff;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      border-radius: 10px;
+      text-align: center;
+      width: 400px;
+    }
+
+    .confirmation button {
+      margin-top: 10px;
+      padding: 10px;
+      background-color: #28a745;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    .confirmation button:hover {
+      background-color: #218838;
+    }
+  </style>
+</head>
+<body>
+  <div class="chat-container">
+    <div id="chat-box" class="chat-box">
+      <div class="message system">
+        <p>Olá! Qual é o seu pedido?</p>
+      </div>
+    </div>
+    <input type="text" id="user-input" class="user-input" placeholder="Digite seu pedido aqui...">
+    <button onclick="nextStep()" class="send-button">Enviar</button>
+  </div>
+
+  <div id="confirmation" class="confirmation">
+    <p id="confirm-message"></p>
+    <button onclick="confirmOrder()">Confirmar Pedido</button>
+    <button onclick="resetOrder()">Alterar Pedido</button>
+  </div>
+
+  <script>
+    let step = 1;
+    let orderDetails = {
+      pedido: "",
+      endereco: ""
+    };
+
+    function nextStep() {
+      const inputField = document.getElementById("user-input");
+      const chatBox = document.getElementById("chat-box");
+      const userInput = inputField.value.trim();
+      inputField.value = "";
+
+      if (step === 1) {
+        if (userInput) {
+          orderDetails.pedido = userInput;
+          chatBox.innerHTML += `<div class="message user"><p>${userInput}</p></div>`;
+          chatBox.innerHTML += `<div class="message system"><p>Ótimo! Agora, qual o seu endereço?</p></div>`;
+          step++;
+        }
+      } else if (step === 2) {
+        if (userInput) {
+          orderDetails.endereco = userInput;
+          chatBox.innerHTML += `<div class="message user"><p>${userInput}</p></div>`;
+          chatBox.innerHTML += `<div class="message system"><p>Você pediu: ${orderDetails.pedido}. Endereço: ${orderDetails.endereco}. Confirma?</p></div>`;
+          showConfirmation();
+        }
+      }
+
+      chatBox.scrollTop = chatBox.scrollHeight;
+    }
+
+    function showConfirmation() {
+      document.querySelector('.chat-container').style.display = 'none';
+      const confirmation = document.getElementById('confirmation');
+      confirmation.style.display = 'block';
+
+      const confirmMessage = document.getElementById('confirm-message');
+      confirmMessage.textContent = `Pedido: ${orderDetails.pedido}\nEndereço: ${orderDetails.endereco}`;
+    }
+
+    function confirmOrder() {
+      alert('Pedido confirmado! Obrigado.');
+      resetOrder();
+    }
+
+    function resetOrder() {
+      step = 1;
+      orderDetails = { pedido: "", endereco: "" };
+      document.querySelector('.chat-container').style.display = 'block';
+      document.getElementById('confirmation').style.display = 'none';
+      document.getElementById('chat-box').innerHTML = `
+        <div class="message system">
+          <p>Olá! Qual é o seu pedido?</p>
+        </div>
+      `;
+    }
+  </script>
+</body>
+</html>
+
